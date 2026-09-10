@@ -41,7 +41,7 @@ import {
 } from "lucide-react";
 import "@fontsource-variable/dm-sans";
 import "@fontsource-variable/manrope";
-import { api, date, percent } from "./lib";
+import { api, date, percent, isPortfolio } from "./lib";
 import type {
   Answer,
   SourceDocument,
@@ -52,6 +52,11 @@ import type {
 import "./styles.css";
 type Bootstrap = {
   mode: string;
+  runtime?: {
+    model: string | null;
+    embeddingModel: string | null;
+    vectorDatabase: string | null;
+  } | null;
   corpusVersion: string;
   documentCount: number;
   chunkCount: number;
@@ -422,6 +427,35 @@ function App() {
             "main-content " + (page === "Assistant" ? "assistant-page" : "")
           }
         >
+          {isPortfolio && (
+            <div className="portfolio-banner">
+              <div>
+                <strong>Interactive portfolio demo</strong>
+                <p>
+                  Recorded examples · simulated workflows · saved only in this
+                  browser. No live AI or account access.
+                </p>
+              </div>
+              <a
+                href="https://github.com/adebolaowolabi32/sourcedesk"
+                target="_blank"
+                rel="noreferrer"
+              >
+                View source ↗
+              </a>
+              <button
+                className="text-button"
+                onClick={() =>
+                  void action(async () => {
+                    await api("/demo/reset", {});
+                    setAnswer(undefined);
+                  }, "Demo reset.")
+                }
+              >
+                Reset demo
+              </button>
+            </div>
+          )}
           {error && (
             <div className="error-banner" role="alert">
               <AlertCircle size={18} />
@@ -460,7 +494,10 @@ function App() {
                         ? "A little more clarity."
                         : "Clarity, with a source."}
                     </h1>
-                    <p>Thoughtful answers for the questions that matter.</p>
+                    <p>
+                      Understand your team’s procedures, with sources you can
+                      check.
+                    </p>
                   </div>
                   {answer && (
                     <button
@@ -475,6 +512,22 @@ function App() {
                       New question
                     </button>
                   )}
+                </div>
+                <div className="engine-notice">
+                  <strong>
+                    {isPortfolio
+                      ? "Explore a recorded answer"
+                      : data.mode === "openai"
+                        ? "AI answers with sources"
+                        : "Offline preview"}
+                  </strong>
+                  <span>
+                    {isPortfolio
+                      ? "Choose a suggested question to see a saved answer and its citations. Other questions can be sent through the simulated review workflow."
+                      : data.mode === "openai"
+                        ? "Find relevant guides by meaning and get an explanation with supporting quotes."
+                        : "This preview shows matching passages from the support guides. AI answers are available when your workspace is configured for them."}
+                  </span>
                 </div>
                 {!answer && (
                   <>
@@ -563,11 +616,13 @@ function App() {
                         <div>
                           <strong>SourceDesk</strong>
                           <span>
-                            {answer.engine === "openai"
-                              ? "Model-selected source passages"
-                              : answer.engine === "fallback"
-                                ? "Model connection unavailable"
-                                : "Extractive answer · no model required"}
+                            {isPortfolio
+                              ? "Recorded sample · no live request"
+                              : answer.engine === "openai"
+                                ? "GPT answer · semantic search"
+                                : answer.engine === "fallback"
+                                  ? "Model connection unavailable"
+                                  : "Extractive answer · no model required"}
                           </span>
                         </div>
                         <span
@@ -588,19 +643,60 @@ function App() {
                       </div>
                       {answer.status === "answered" ? (
                         <>
-                          <h2>Here’s what the guides say.</h2>
-                          {answer.passages.map((p, i) => (
-                            <p className="answer-passage" key={p.citationId}>
-                              {p.text}{" "}
-                              <button
-                                className="inline-citation"
-                                aria-label={"Open citation " + (i + 1)}
-                                onClick={() => openSource(p.citationId)}
-                              >
-                                {i + 1}
-                              </button>
-                            </p>
-                          ))}
+                          <h2>
+                            {answer.claims?.length
+                              ? "Here’s what to do."
+                              : "Here’s what the guides say."}
+                          </h2>
+                          {answer.claims?.length
+                            ? answer.claims.map((claim, index) => (
+                                <div key={index} className="generated-claim">
+                                  <p className="answer-passage">
+                                    {claim.text}{" "}
+                                    {claim.citations.map((citation, i) => (
+                                      <button
+                                        key={i}
+                                        className="inline-citation"
+                                        aria-label={
+                                          "Open citation " +
+                                          (answer.passages.findIndex(
+                                            (p) => p.citationId === citation.id,
+                                          ) +
+                                            1)
+                                        }
+                                        onClick={() => openSource(citation.id)}
+                                      >
+                                        {answer.passages.findIndex(
+                                          (p) => p.citationId === citation.id,
+                                        ) + 1}
+                                      </button>
+                                    ))}
+                                  </p>
+                                  <details>
+                                    <summary>See supporting quotes</summary>
+                                    {claim.citations.map((citation, i) => (
+                                      <blockquote key={i}>
+                                        {citation.quote}
+                                      </blockquote>
+                                    ))}
+                                  </details>
+                                </div>
+                              ))
+                            : answer.passages.map((p, i) => (
+                                <p
+                                  className="answer-passage"
+                                  key={p.citationId}
+                                >
+                                  {p.text}{" "}
+                                  <button
+                                    className="inline-citation"
+                                    aria-label={"Open citation " + (i + 1)}
+                                    onClick={() => openSource(p.citationId)}
+                                  >
+                                    {i + 1}
+                                  </button>
+                                </p>
+                              ))}
                           <div className="answer-sources">
                             {answer.passages.map((p, i) => (
                               <button
@@ -634,10 +730,14 @@ function App() {
                           <span className="tiny-dot" />
                           {answer.status === "answered"
                             ? answer.passages.length +
-                              " verified source passages"
+                              (answer.claims?.length
+                                ? " cited guides · check sources before acting"
+                                : " verified source passages")
                             : "No unsupported answer generated"}
                           <span className="answer-latency">
-                            {answer.latencyMs} ms
+                            {isPortfolio
+                              ? "Recorded example"
+                              : `${answer.latencyMs} ms`}
                           </span>
                         </div>
                         <div className="feedback-actions">
@@ -775,9 +875,11 @@ function App() {
                   <div className="composer-bottom">
                     <span>
                       <BookOpen size={13} />
-                      {data.mode === "openai"
-                        ? "Model-assisted evidence selection"
-                        : "Knowledge-only · works offline"}
+                      {isPortfolio
+                        ? "Browser-only preview · try a suggested question"
+                        : data.mode === "openai"
+                          ? "AI answers · questions sent to OpenAI"
+                          : "Knowledge-only · works offline"}
                     </span>
                     <span className="composer-count">{draft.length}/1200</span>
                     <button
@@ -1073,17 +1175,26 @@ function App() {
                     className="button primary"
                     disabled={busy}
                     onClick={() =>
-                      void action(async () => {
-                        const evaluation = await api<EvalResult>(
-                          "/evaluations",
-                          {},
-                        );
-                        setData((d) => (d ? { ...d, evaluation } : d));
-                      }, "Evaluation complete.")
+                      void action(
+                        async () => {
+                          const evaluation = await api<EvalResult>(
+                            "/evaluations",
+                            {},
+                          );
+                          setData((d) => (d ? { ...d, evaluation } : d));
+                        },
+                        isPortfolio
+                          ? "Saved evaluation loaded."
+                          : "Evaluation complete.",
+                      )
                     }
                   >
                     <FlaskConical size={16} />
-                    {busy ? "Evaluating…" : "Run evaluation"}
+                    {isPortfolio
+                      ? "View saved evaluation"
+                      : busy
+                        ? "Evaluating…"
+                        : "Run evaluation"}
                   </button>
                 }
               />

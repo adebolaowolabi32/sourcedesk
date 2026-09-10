@@ -1,0 +1,20 @@
+{
+  "checkedOn": "2026-09-10",
+  "status": "passed",
+  "indexedChunks": 30,
+  "liveGenerationVerified": true,
+  "liveCasesPassed": 5,
+  "liveCasesTotal": 5,
+  "budget": {
+    "limitUsd": 0.5,
+    "reservedUsd": 0.23459014000000003,
+    "estimatedUsageUsd": 0.008389579999999999,
+    "requests": 13,
+    "pricingSources": [
+      "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+      "https://developers.openai.com/api/docs/models/text-embedding-3-small"
+    ]
+  },
+  "initialFailure": "credit_balance_exhausted; resolved after account funding",
+  "report": "live-evaluation-report.json"
+}

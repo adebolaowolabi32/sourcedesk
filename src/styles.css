@@ -2603,3 +2603,61 @@ p {
     visibility: visible;
   }
 }
+
+.engine-notice {
+  display: grid;
+  gap: 5px;
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  border: 1px solid #ded8ef;
+  border-radius: 12px;
+  background: #f8f6fc;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #6a637e;
+}
+.engine-notice strong {
+  color: #66508f;
+  font-size: 13px;
+}
+.generated-claim details {
+  margin: -8px 0 20px;
+  color: #777083;
+  font-size: 12px;
+}
+.generated-claim summary {
+  cursor: pointer;
+}
+.generated-claim blockquote {
+  margin: 10px 0;
+  padding: 8px 14px;
+  border-left: 2px solid #a28ac5;
+  line-height: 1.7;
+}
+
+.portfolio-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border: 1px solid #d8c9ee;
+  border-radius: 14px;
+  background: #f4effa;
+  color: #55436d;
+}
+.portfolio-banner > div {
+  flex: 1;
+  min-width: 200px;
+}
+.portfolio-banner p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.portfolio-banner a {
+  color: #68469b;
+  font-size: 13px;
+  font-weight: 600;
+}

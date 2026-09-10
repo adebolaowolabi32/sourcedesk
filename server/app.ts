@@ -9,7 +9,16 @@ const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 export function createApp(
   store: Store,
   engine: Engine,
-  options: { modelEnabled?: boolean; secure?: boolean } = {},
+  options: {
+    modelEnabled?: boolean;
+    secure?: boolean;
+    runtime?: {
+      model: string | null;
+      embeddingModel: string | null;
+      vectorDatabase: string | null;
+    };
+    readiness?: () => Promise<{ ready: boolean }>;
+  } = {},
 ) {
   const app = express();
   app.disable("x-powered-by");
@@ -38,6 +47,16 @@ export function createApp(
     next();
   });
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
+  app.get("/api/ready", async (_req, res) => {
+    try {
+      const status = options.readiness
+        ? await options.readiness()
+        : { ready: true };
+      res.status(status.ready ? 200 : 503).json(status);
+    } catch {
+      res.status(503).json({ ready: false });
+    }
+  });
   app.use("/api", (req, res, next) => {
     const raw =
       req.headers.cookie
@@ -65,6 +84,7 @@ export function createApp(
   app.get("/api/bootstrap", (_req, res) =>
     res.json({
       mode: options.modelEnabled ? "openai" : "extractive",
+      runtime: options.runtime ?? null,
       corpusVersion: engine.corpus.version,
       documentCount: engine.corpus.documents.length,
       chunkCount: engine.corpus.chunks.filter((c) => !c.quarantined).length,

@@ -209,3 +209,51 @@ test("saved citations retain their original evidence after the library changes",
     "This guide was revised",
   );
 });
+
+test("generated claims expose supporting quotes and open their source", async ({
+  page,
+}) => {
+  await page.route("**/api/bootstrap", async (route) => {
+    const response = await route.fetch();
+    const data = await response.json();
+    await route.fulfill({ response, json: { ...data, mode: "openai" } });
+  });
+  let quote = "";
+  await page.route("**/api/ask", async (route) => {
+    const response = await route.fetch();
+    const answer = await response.json();
+    quote = answer.passages[0].text;
+    await route.fulfill({
+      response,
+      json: {
+        ...answer,
+        engine: "openai",
+        retrievalMode: "vector",
+        claims: [
+          {
+            text: "Check the provider outcome before creating a replacement payment.",
+            citations: [{ id: answer.passages[0].citationId, quote }],
+          },
+        ],
+      },
+    });
+  });
+  await page.goto("/");
+  await expect(page.locator(".engine-notice")).toContainText(
+    "AI answers with sources",
+  );
+  await page
+    .getByRole("button", { name: /A payment is still confirming/ })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Here’s what to do." }),
+  ).toBeVisible();
+  await page.getByText("See supporting quotes", { exact: true }).click();
+  await expect(page.locator(".generated-claim blockquote")).toHaveText(quote);
+  await page
+    .getByRole("button", { name: "Open citation 1", exact: true })
+    .click();
+  await expect(page.locator(".source-section.highlighted")).toHaveText(
+    new RegExp("Do not create a replacement payment"),
+  );
+});

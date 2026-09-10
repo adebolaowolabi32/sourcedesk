@@ -1,5 +1,11 @@
 # Install SourceDesk
 
+## Browser-only portfolio preview
+
+Use [the GitHub Pages demo](https://adebolaowolabi32.github.io/sourcedesk/) with no installation. It shows recorded sample answers and simulated workflows, keeps state in your browser, and makes no API calls. Use **Reset demo** to clear your preview history.
+
+To run the same preview locally, use `npm ci`, `npm run build:portfolio`, then `npm run preview:portfolio`. Open http://127.0.0.1:4173/sourcedesk/. The rest of this guide describes the optional full implementation for code review and local development.
+
 ## Prerequisites
 
 - Git.
@@ -39,21 +45,34 @@ Open http://127.0.0.1:3010. For VM access, forward port 3010 using the same SSH 
 
 ## Configuration
 
-Set variables in the same terminal that starts the app. The scripts do not automatically load a `.env` file. On Windows PowerShell, use `$env:NAME = 'value'` instead of `export NAME='value'`.
+The server loads `.env` automatically; already-exported environment variables take precedence. `OPENAI_ENV_FILE` optionally loads a separate server-only env file for a securely provisioned key. Keep that file ignored by Git. Never put keys in a `VITE_` variable or frontend file.
 
-| Variable                 | Default / effect                                                       |
-| ------------------------ | ---------------------------------------------------------------------- |
-| `PORT`                   | API listener, default 3010                                             |
-| `HOST`                   | Bind address, default 127.0.0.1                                        |
-| `DB_PATH`                | SQLite path, default `data/sourcedesk.db`                              |
-| `ANSWER_MODE`            | `extractive` by default; `openai` explicitly enables model requests    |
-| `OPENAI_API_KEY`         | Server-side key, required only in OpenAI mode                          |
-| `OPENAI_MODEL`           | Explicit Responses/structured-output model ID, required in OpenAI mode |
-| `INPUT_USD_PER_MILLION`  | Optional manually verified input-token price                           |
-| `OUTPUT_USD_PER_MILLION` | Optional manually verified output-token price                          |
-| `NODE_ENV`               | `production` enables Secure cookies; use HTTPS in that mode            |
+| Variable                 | Default / effect                                                 |
+| ------------------------ | ---------------------------------------------------------------- |
+| `PORT`                   | API port, 3010                                                   |
+| `HOST`                   | Bind address, 127.0.0.1                                          |
+| `DB_PATH`                | SQLite session/history file, `data/sourcedesk.db`                |
+| `ANSWER_MODE`            | `extractive`; `rag` or `openai` enables GPT and vector retrieval |
+| `OPENAI_API_KEY`         | Server-only credential, required for RAG                         |
+| `OPENAI_ENV_FILE`        | Optional ignored env-file path containing the key                |
+| `OPENAI_MODEL`           | `gpt-5.4-mini`                                                   |
+| `OPENAI_EMBEDDING_MODEL` | `text-embedding-3-small`, requested at 1,536 dimensions          |
+| `VECTOR_DATABASE_URL`    | Required PostgreSQL connection URL in RAG mode                   |
+| `NODE_ENV`               | `production` enables Secure cookies; requires HTTPS              |
 
-If you change the development API port, update the Vite proxy in `vite.config.ts` to match. Never put an API key in a `VITE_` variable or frontend file. The app sends the entered question and retrieved passages to OpenAI only when `ANSWER_MODE=openai` is enabled. No API request is made by the default mode or evaluation dashboard.
+If the API port changes, update the Vite proxy to match. The default offline mode and dashboard evaluations make no API calls.
+
+## GPT and vector search
+
+1. Start PostgreSQL with pgvector: `docker compose up -d --wait`. The supplied Compose service binds only to localhost:55433, stores data in a named volume, and uses local-demo credentials. An existing PostgreSQL instance with pgvector also works; provide a dedicated database and a role able to initialize the extension/schema.
+2. Copy `.env.example` to ignored `.env`, configure `VECTOR_DATABASE_URL`, and provision an OpenAI API key securely. A separately provisioned env file can be loaded through `OPENAI_ENV_FILE`; keep it ignored by Git. Do not paste a key into documentation or source files. Set `ANSWER_MODE=rag`.
+3. Run `npm run index:knowledge`. This sends the synthetic guides to OpenAI and stores their vectors in PostgreSQL. Check the printed `ready: true` status.
+4. Run `npm run dev`, or build and run `npm start`. `/api/ready` returns 200 only when the expected vector generation is complete.
+5. Run `npm run evaluate:live` for an explicit paid smoke check of paraphrase retrieval, cited generation, unsupported questions, and account handoff. Its report is separate from the offline baseline.
+
+Indexing and answering incur API usage. A ChatGPT subscription does not provide API credits. If a request returns `credit_balance_exhausted`, fund [API billing](https://platform.openai.com/settings/organization/billing) before retrying. The configured starter answer model is `gpt-5.4-mini`.
+
+The corpus hash and embedding model determine the index generation. Repeat indexing reuses a complete matching generation. After changing guides or models, re-index and restart. Keep old generations until no process uses them; no automatic destructive cleanup is performed. Back up PostgreSQL as well as SQLite if retaining the RAG index is important. `docker compose down` keeps the named volume; deleting the volume removes the index.
 
 ## Verify
 
@@ -75,14 +94,18 @@ The browser tests use port 3011 and an in-memory database, preserving your saved
 
 ## Troubleshooting
 
-| Problem                                | Check                                                                                                                                          |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Cannot import `node:sqlite`            | Upgrade to a supported Node version. The experimental SQLite warning on Node 22 is informational.                                              |
-| Browser cannot reach a VM              | Run SSH forwarding on the laptop and open the laptop’s forwarded localhost port.                                                               |
-| Port already in use                    | Stop the previous SourceDesk process or choose a free port and adjust the proxy.                                                               |
-| Model mode refuses to start            | Both `OPENAI_API_KEY` and `OPENAI_MODEL` must be present. Use the default mode to explore without them.                                        |
-| Model request creates a review handoff | The provider timed out, refused, returned incomplete output, or selected invalid citations. The app deliberately avoids rendering that output. |
-| Past questions disappeared             | Sessions belong to one browser cookie and expire after seven days; clearing cookies creates a new sandbox.                                     |
-| No handoff email arrives               | Review cases are local workflow records. The demo does not send external messages.                                                             |
+| Problem                                | Check                                                                                                                                                |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cannot import `node:sqlite`            | Upgrade to a supported Node version. The experimental SQLite warning on Node 22 is informational.                                                    |
+| Browser cannot reach a VM              | Run SSH forwarding on the laptop and open the laptop’s forwarded localhost port.                                                                     |
+| Port already in use                    | Stop the previous SourceDesk process or choose a free port and adjust the proxy.                                                                     |
+| Model mode refuses to start            | Check the key, `VECTOR_DATABASE_URL`, pgvector installation, and a complete index.                                                                   |
+| Model request creates a review handoff | The provider timed out, refused, returned incomplete output, or returned invalid citation quotes. The app deliberately avoids rendering that output. |
+| Past questions disappeared             | Sessions belong to one browser cookie and expire after seven days; clearing cookies creates a new sandbox.                                           |
+| No handoff email arrives               | Review cases are local workflow records. The demo does not send external messages.                                                                   |
 
 Press Ctrl+C to stop. Restart with the same `DB_PATH` to keep saved sessions/questions. For a file backup, stop the app before copying the SQLite database; copying the main file while a WAL database is running can omit recent writes. Store backups securely if you enter anything beyond synthetic demo data.
+
+For local database integration tests, set `TEST_VECTOR_DATABASE_URL` to a disposable PostgreSQL database with pgvector and run `npm test`. Without it, the vector integration test is explicitly skipped; CI provisions pgvector and requires this variable. Tests use temporary schemas and delete only their own fixtures. No live API key is needed for backend or browser tests.
+
+The live smoke runner now indexes automatically if needed and enforces a persistent $0.50 conservative budget across serial reruns. Its ledger is `data/live-test-budget.json`; do not reset it without a new spending authorization. Only the priced default models are accepted. Interactive app requests and standalone `index:knowledge` are outside that runner budget.

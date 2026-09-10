@@ -19,6 +19,7 @@ export type Chunk = {
 };
 export type Evidence = Chunk & {
   score: number;
+  retrieval?: "vector";
   coverage: number;
   matches: string[];
 };
@@ -28,6 +29,9 @@ export type Answer = {
   status: "answered" | "handoff";
   reason: string;
   passages: { text: string; citationId: string }[];
+  claims?: { text: string; citations: { id: string; quote: string }[] }[];
+  embeddingTokens?: number;
+  retrievalMode?: "lexical" | "vector";
   evidence: Evidence[];
   engine: "extractive" | "openai" | "fallback";
   latencyMs: number;

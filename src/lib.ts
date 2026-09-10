@@ -1,4 +1,9 @@
+export const isPortfolio = import.meta.env.MODE === "portfolio";
 export async function api<T>(path: string, body?: unknown): Promise<T> {
+  if (isPortfolio) {
+    const { demoApi } = await import("./demo");
+    return demoApi(path, body) as T;
+  }
   const response = await fetch("/api" + path, {
     method: body === undefined ? "GET" : "POST",
     headers: {

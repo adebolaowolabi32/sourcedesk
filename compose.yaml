@@ -1,0 +1,18 @@
+services:
+  vectors:
+    image: pgvector/pgvector:0.8.6-pg17
+    environment:
+      POSTGRES_USER: sourcedesk
+      POSTGRES_PASSWORD: sourcedesk_local
+      POSTGRES_DB: sourcedesk
+    ports:
+      - "127.0.0.1:55433:5432"
+    volumes:
+      - sourcedesk_vectors:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sourcedesk -d sourcedesk"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+volumes:
+  sourcedesk_vectors:

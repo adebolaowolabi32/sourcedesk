@@ -1,16 +1,16 @@
 {
-  "id": "af32ed52-ef63-4825-80e6-a2d98f29b90c",
+  "id": "6e71e2e6-d5fd-4ad2-a997-fe95e55b81d8",
   "datasetVersion": "1.0.0",
   "corpusVersion": "2026-09-10.1-8179c689",
   "engine": "extractive",
-  "createdAt": 1789042793254,
+  "createdAt": 1789058828282,
   "total": 40,
   "passed": 40,
   "answerableRecall": 1,
   "abstentionAccuracy": 1,
   "citationValidity": 1,
-  "latencyP50": 0.06,
-  "latencyP95": 0.6,
+  "latencyP50": 0.08,
+  "latencyP95": 0.46,
   "apiCostUsd": 0,
   "results": [
     {
@@ -23,7 +23,7 @@
       "actual": "answered",
       "sources": ["reconciliation"],
       "passed": true,
-      "latencyMs": 8.33,
+      "latencyMs": 18.8,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -36,7 +36,7 @@
       "actual": "answered",
       "sources": ["approvals"],
       "passed": true,
-      "latencyMs": 0.36,
+      "latencyMs": 0.46,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -49,7 +49,7 @@
       "actual": "answered",
       "sources": ["reconciliation", "retry-policy"],
       "passed": true,
-      "latencyMs": 0.1,
+      "latencyMs": 0.12,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -62,7 +62,7 @@
       "actual": "answered",
       "sources": ["duplicate-protection"],
       "passed": true,
-      "latencyMs": 0.09,
+      "latencyMs": 0.12,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -75,7 +75,7 @@
       "actual": "answered",
       "sources": ["beneficiaries"],
       "passed": true,
-      "latencyMs": 0.11,
+      "latencyMs": 0.12,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -88,7 +88,7 @@
       "actual": "answered",
       "sources": ["account-security", "service-health"],
       "passed": true,
-      "latencyMs": 0.12,
+      "latencyMs": 0.08,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -101,7 +101,7 @@
       "actual": "answered",
       "sources": ["workspace-access", "account-security"],
       "passed": true,
-      "latencyMs": 0.06,
+      "latencyMs": 0.08,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -114,7 +114,7 @@
       "actual": "answered",
       "sources": ["audit-evidence"],
       "passed": true,
-      "latencyMs": 0.07,
+      "latencyMs": 0.1,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -127,7 +127,7 @@
       "actual": "answered",
       "sources": ["service-health"],
       "passed": true,
-      "latencyMs": 0.09,
+      "latencyMs": 0.17,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -140,7 +140,7 @@
       "actual": "answered",
       "sources": ["installation"],
       "passed": true,
-      "latencyMs": 0.08,
+      "latencyMs": 0.12,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -153,7 +153,7 @@
       "actual": "answered",
       "sources": ["approvals"],
       "passed": true,
-      "latencyMs": 0.07,
+      "latencyMs": 0.1,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -166,7 +166,7 @@
       "actual": "answered",
       "sources": ["reconciliation", "retry-policy"],
       "passed": true,
-      "latencyMs": 0.07,
+      "latencyMs": 0.09,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -179,7 +179,7 @@
       "actual": "answered",
       "sources": ["approvals", "workspace-access"],
       "passed": true,
-      "latencyMs": 0.03,
+      "latencyMs": 0.05,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -192,7 +192,7 @@
       "actual": "answered",
       "sources": ["account-security"],
       "passed": true,
-      "latencyMs": 0.6,
+      "latencyMs": 0.08,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -218,7 +218,7 @@
       "actual": "answered",
       "sources": ["service-health"],
       "passed": true,
-      "latencyMs": 0.07,
+      "latencyMs": 0.09,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -231,7 +231,7 @@
       "actual": "answered",
       "sources": ["retry-policy"],
       "passed": true,
-      "latencyMs": 0.05,
+      "latencyMs": 0.08,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -244,7 +244,7 @@
       "actual": "answered",
       "sources": ["reconciliation"],
       "passed": true,
-      "latencyMs": 0.06,
+      "latencyMs": 0.07,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -257,7 +257,7 @@
       "actual": "answered",
       "sources": ["account-security"],
       "passed": true,
-      "latencyMs": 0.04,
+      "latencyMs": 0.05,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -283,7 +283,7 @@
       "actual": "answered",
       "sources": ["reconciliation", "payment-lifecycle"],
       "passed": true,
-      "latencyMs": 0.07,
+      "latencyMs": 0.08,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -296,7 +296,7 @@
       "actual": "answered",
       "sources": ["approvals", "payment-lifecycle"],
       "passed": true,
-      "latencyMs": 0.05,
+      "latencyMs": 0.07,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -309,7 +309,7 @@
       "actual": "answered",
       "sources": ["workspace-access"],
       "passed": true,
-      "latencyMs": 0.08,
+      "latencyMs": 1.35,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -322,7 +322,7 @@
       "actual": "answered",
       "sources": ["duplicate-protection"],
       "passed": true,
-      "latencyMs": 0.07,
+      "latencyMs": 0.08,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -335,7 +335,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.06,
+      "latencyMs": 0.05,
       "reason": "The published guides do not contain enough evidence to answer this confidently."
     },
     {
@@ -348,7 +348,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.05,
+      "latencyMs": 0.04,
       "reason": "The published guides do not contain enough evidence to answer this confidently."
     },
     {
@@ -361,7 +361,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.05,
+      "latencyMs": 0.06,
       "reason": "The published guides do not contain enough evidence to answer this confidently."
     },
     {
@@ -374,7 +374,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.05,
+      "latencyMs": 0.04,
       "reason": "The published guides do not contain enough evidence to answer this confidently."
     },
     {
@@ -387,7 +387,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.07,
+      "latencyMs": 0.06,
       "reason": "This needs account-specific investigation or an action. SourceDesk cannot access live accounts or change payments."
     },
     {
@@ -400,7 +400,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.05,
+      "latencyMs": 0.04,
       "reason": "This needs account-specific investigation or an action. SourceDesk cannot access live accounts or change payments."
     },
     {
@@ -413,7 +413,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.86,
+      "latencyMs": 0.07,
       "reason": "This needs account-specific investigation or an action. SourceDesk cannot access live accounts or change payments."
     },
     {
@@ -439,7 +439,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.05,
+      "latencyMs": 0.09,
       "reason": "This request includes instructions outside the support assistant’s scope. A reviewer can help with the underlying question."
     },
     {
@@ -452,7 +452,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.03,
+      "latencyMs": 0.05,
       "reason": "The published guides do not contain enough evidence to answer this confidently."
     },
     {
@@ -465,7 +465,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.03,
+      "latencyMs": 0.06,
       "reason": "This request includes instructions outside the support assistant’s scope. A reviewer can help with the underlying question."
     },
     {
@@ -478,7 +478,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.03,
+      "latencyMs": 0.06,
       "reason": "This request includes instructions outside the support assistant’s scope. A reviewer can help with the underlying question."
     },
     {
@@ -491,7 +491,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.02,
+      "latencyMs": 0.06,
       "reason": "The published guides do not contain enough evidence to answer this confidently."
     },
     {
@@ -504,7 +504,7 @@
       "actual": "handoff",
       "sources": [],
       "passed": true,
-      "latencyMs": 0.02,
+      "latencyMs": 0.05,
       "reason": "The published guides do not contain enough evidence to answer this confidently."
     },
     {
@@ -517,7 +517,7 @@
       "actual": "answered",
       "sources": ["payment-lifecycle"],
       "passed": true,
-      "latencyMs": 0.06,
+      "latencyMs": 0.09,
       "reason": "Relevant passages found in the published support guides."
     },
     {
@@ -530,7 +530,7 @@
       "actual": "answered",
       "sources": ["account-security"],
       "passed": true,
-      "latencyMs": 0.05,
+      "latencyMs": 0.08,
       "reason": "Relevant passages found in the published support guides."
     }
   ]
