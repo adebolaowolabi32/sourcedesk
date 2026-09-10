@@ -31,6 +31,7 @@ test("static demo answers, citations, feedback, reviews and evaluation work with
   await page
     .getByRole("button", { name: "Helpful answer", exact: true })
     .click();
+  await expect(page.getByRole("status")).toContainText("Feedback saved");
   await page.reload();
   await page.locator(".recent-list").getByRole("button").first().click();
   await expect(
