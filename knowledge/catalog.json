@@ -1,0 +1,275 @@
+{
+  "version": "2026-09-10.1",
+  "documents": [
+    {
+      "id": "payment-lifecycle",
+      "title": "Understanding payment statuses",
+      "category": "Payments",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "payment-lifecycle.md",
+      "sections": [
+        {
+          "id": "pending",
+          "heading": "Awaiting approval",
+          "text": "A pending payment is a request waiting for independent review. No transfer has been submitted to the provider yet. Ask a checker or administrator who did not create the request to review it."
+        },
+        {
+          "id": "queued",
+          "heading": "Queued for processing",
+          "text": "A queued payment has been approved and is waiting for a worker. Keep the worker and provider simulator running. If the queue stops progressing, check System health and ask operations to inspect readiness."
+        },
+        {
+          "id": "paid",
+          "heading": "Confirmed payments",
+          "text": "Paid means the simulator returned a confirmed receipt. The receipt is visible in Payment details. All transfers in LedgerDesk are synthetic; a Paid status does not represent a real bank transfer."
+        }
+      ]
+    },
+    {
+      "id": "reconciliation",
+      "title": "When a payment is still confirming",
+      "category": "Recovery",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "reconciliation.md",
+      "sections": [
+        {
+          "id": "unknown",
+          "heading": "An uncertain outcome",
+          "text": "A reconciling payment has an uncertain provider outcome, often because a response was lost after acceptance. The worker checks the provider using the original idempotency key. Do not create a replacement payment while the outcome is unknown."
+        },
+        {
+          "id": "lookup",
+          "heading": "Waiting for a status lookup",
+          "text": "If the provider status lookup is unavailable, the payment stays in reconciliation. An unavailable lookup is not proof that a transfer failed. The worker continues checking with capped backoff; ask operations to investigate a prolonged incident."
+        },
+        {
+          "id": "retry",
+          "heading": "Why manual retry is unavailable",
+          "text": "Manual retry is unavailable for reconciling payments. Retry is allowed only after three explicit failures before provider acceptance. An unknown outcome must be resolved through authoritative provider lookup or a verified callback."
+        }
+      ]
+    },
+    {
+      "id": "approvals",
+      "title": "Independent approvals",
+      "category": "Controls",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "approvals.md",
+      "sections": [
+        {
+          "id": "separation",
+          "heading": "Who can approve a payment",
+          "text": "A checker or administrator can approve a pending payment only if someone else created it. Makers and viewers cannot approve. Administrators cannot approve their own requests; ask another checker."
+        },
+        {
+          "id": "reject",
+          "heading": "Rejecting an incorrect request",
+          "text": "A reviewer can reject a pending request with a reason of 5 to 300 characters. Rejected payments are not sent to the provider. A corrected request needs a new payment and another independent review."
+        },
+        {
+          "id": "stale",
+          "heading": "The request changed during review",
+          "text": "A stale version error means the payment changed after you opened it. Refresh Payment details and read the latest status before reviewing. Approval is single-use; do not repeatedly submit the old review."
+        }
+      ]
+    },
+    {
+      "id": "retry-policy",
+      "title": "Retries, declines, and safe recovery",
+      "category": "Recovery",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "retry-policy.md",
+      "sections": [
+        {
+          "id": "temporary",
+          "heading": "Temporary provider outages",
+          "text": "An explicit provider failure before acceptance retries up to three times, starting with roughly 5 seconds and then 10 seconds between attempts, plus jitter. After exhaustion, the payment needs attention and a checker or administrator can start a new retry cycle."
+        },
+        {
+          "id": "decline",
+          "heading": "Permanent declines",
+          "text": "A permanently declined transfer is terminal and is not automatically retried. Manual retry is unavailable for declined payments. Ask the operations team to investigate the decline before deciding whether a new request is appropriate."
+        },
+        {
+          "id": "history",
+          "heading": "History across retry cycles",
+          "text": "Starting a new retry cycle preserves every earlier processing attempt. Payment details includes started operations and their outcome events, request IDs, and stale-worker indicators. An unfinished started event may mean a worker was interrupted."
+        }
+      ]
+    },
+    {
+      "id": "duplicate-protection",
+      "title": "Preventing duplicate requests",
+      "category": "Controls",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "duplicate-protection.md",
+      "sections": [
+        {
+          "id": "keys",
+          "heading": "Idempotency keys",
+          "text": "Each payment creation request uses an Idempotency-Key scoped to its creator and workspace. Reusing the same key with equivalent payment details returns the original payment. Reusing it with different details returns a conflict."
+        },
+        {
+          "id": "provider",
+          "heading": "Duplicate protection at the provider",
+          "text": "Workers use a stable workspace and payment key for provider submissions. A restarted worker checks for an existing transfer before resubmitting. The provider must retain receipts and honor idempotency for this protection to work."
+        }
+      ]
+    },
+    {
+      "id": "beneficiaries",
+      "title": "Recipients and payment amounts",
+      "category": "Payments",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "beneficiaries.md",
+      "sections": [
+        {
+          "id": "amount",
+          "heading": "Supported currency and amount",
+          "text": "LedgerDesk accepts Nigerian naira amounts from NGN 0.01 to NGN 99,999,999.99 with at most two decimal places. The API accepts a decimal string and stores integer kobo. Other currencies are not supported in this demo."
+        },
+        {
+          "id": "recipient",
+          "heading": "Selecting a recipient",
+          "text": "Choose a saved beneficiary in your active workspace and verify the displayed bank and account suffix before submitting. The demo displays only the last four account digits. It does not verify real bank account ownership or support live bank transfers."
+        }
+      ]
+    },
+    {
+      "id": "workspace-access",
+      "title": "Roles and workspace access",
+      "category": "Access",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "workspace-access.md",
+      "sections": [
+        {
+          "id": "roles",
+          "heading": "Available roles",
+          "text": "Makers create payment requests. Checkers approve or reject independent requests and retry exhausted failures. Administrators manage members, workspaces, and simulator settings. Viewers can read records but cannot create or review payments."
+        },
+        {
+          "id": "switch",
+          "heading": "Switching workspaces",
+          "text": "Use the workspace selector to choose a workspace where you have an active membership. Payments, beneficiaries, and history are scoped to that workspace. A member of Cedar Finance cannot read Harbor Labs records without a Harbor Labs membership."
+        },
+        {
+          "id": "revocation",
+          "heading": "Membership changes",
+          "text": "An administrator can change a member role or deactivate membership from Account. Changes apply to subsequent requests, including existing sessions. At least one active administrator must remain in each workspace."
+        }
+      ]
+    },
+    {
+      "id": "account-security",
+      "title": "Passwords and account recovery",
+      "category": "Access",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "account-security.md",
+      "sections": [
+        {
+          "id": "password",
+          "heading": "Changing your password",
+          "text": "Use Account to enter your current password and a new password of 12 to 200 characters. A password change signs out every session and invalidates older unused recovery links. Sign in again with the new password."
+        },
+        {
+          "id": "recovery",
+          "heading": "Forgotten passwords",
+          "text": "Choose Forgot password on the sign-in screen and enter your email. If the account exists, recovery instructions are queued for the configured delivery adapter. Recovery tokens expire after 30 minutes and can be used once. Never share your password or recovery token with support."
+        },
+        {
+          "id": "invite",
+          "heading": "Joining from an invitation",
+          "text": "An administrator can invite a member with an email and a role. Invitation tokens expire after 24 hours. Use Accept invitation on the sign-in screen. Existing account holders must use their current password; new accounts need a password of at least 12 characters."
+        }
+      ]
+    },
+    {
+      "id": "audit-evidence",
+      "title": "Audit records and evidence",
+      "category": "Operations",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "audit-evidence.md",
+      "sections": [
+        {
+          "id": "history",
+          "heading": "Finding a complete payment history",
+          "text": "Open Payment details to view that payment\u2019s own history and processing attempts. Use the page controls to reach older events. This history is queried separately from the latest workspace activity, so older payment events remain accessible."
+        },
+        {
+          "id": "archive",
+          "heading": "External audit retention",
+          "text": "Audit records and attempt events reject normal SQL updates and deletes. A database owner can bypass these protections. Stronger retention needs an independently administered archive receiver configured through AUDIT_EXPORT_URL and AUDIT_EXPORT_TOKEN."
+        }
+      ]
+    },
+    {
+      "id": "service-health",
+      "title": "Diagnosing service health",
+      "category": "Operations",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "service-health.md",
+      "sections": [
+        {
+          "id": "readiness",
+          "heading": "Liveness and readiness",
+          "text": "The health endpoint reports that the API process is alive. The readiness endpoint also checks PostgreSQL, the provider, and a recent worker heartbeat when jobs exist. A 503 readiness response indicates a degraded dependency or stale worker."
+        },
+        {
+          "id": "escalation",
+          "heading": "What to include in an incident",
+          "text": "For a payment incident, send the payment ID, approximate time, current status, and request ID to your operations team. Include the observed error and whether other payments are affected. Do not send passwords, session cookies, or recovery tokens."
+        }
+      ]
+    },
+    {
+      "id": "demo-boundaries",
+      "title": "What this demo can and cannot do",
+      "category": "Product",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "demo-boundaries.md",
+      "sections": [
+        {
+          "id": "scope",
+          "heading": "Synthetic payments only",
+          "text": "LedgerDesk uses fictional companies, recipients, and transfers. No real money moves. It does not connect to a bank, issue refunds, calculate fees or tax, or promise real-world settlement times."
+        },
+        {
+          "id": "assistant",
+          "heading": "Support assistant scope",
+          "text": "SourceDesk explains the published synthetic support guides. It cannot inspect your bank, retrieve live balances, approve a payment, or change credentials. Account-specific payment status, disputes, missing funds, and undocumented policies require human review."
+        }
+      ]
+    },
+    {
+      "id": "installation",
+      "title": "Getting the demo running",
+      "category": "Product",
+      "version": "1.0",
+      "updatedAt": "2026-09-10",
+      "file": "installation.md",
+      "sections": [
+        {
+          "id": "start",
+          "heading": "Local installation",
+          "text": "Clone the payment-operations-console repository, install dependencies with npm ci, start PostgreSQL with docker compose up -d postgres, and run npm run dev. Use Node.js 22.13 or later in the 22 release line, or Node.js 24 or later. The frontend normally opens on local port 5173."
+        },
+        {
+          "id": "vm",
+          "heading": "Opening the app from a VM",
+          "text": "When the demo runs on a remote VM, forward port 5173 through SSH to your laptop and open the forwarded localhost address in your browser. The frontend proxies API requests, so PostgreSQL and the provider do not need public ports."
+        }
+      ]
+    }
+  ]
+}
