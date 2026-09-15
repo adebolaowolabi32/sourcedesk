@@ -135,3 +135,9 @@ npm run preview:portfolio
 Open http://127.0.0.1:4173/sourcedesk/. `npm run test:portfolio` exercises the static artifact, including citations, saved feedback, simulated cases, saved evaluation, mobile layout, and no backend API requests. The Pages workflow builds and tests this same artifact before deployment. Only `dist/` is uploaded; server files, databases, and local credentials are excluded.
 
 The preview uses checked-in synthetic fixtures in `src/demo-fixtures.json`. To refresh them after intentionally updating the corpus or saved reports, run `node --import=tsx scripts/demo-fixtures.ts` and format/review the resulting file. This generator uses the offline engine and the existing live report; it makes no API calls.
+
+## Author
+
+[Cynthia Owolabi](https://github.com/adebolaowolabi32), Senior Full Stack Engineer with experience across backend, frontend, platforms and applied AI.
+
+[Portfolio and experience](https://adebolaowolabi32.github.io/) · [Current CVs](https://adebolaowolabi32.github.io/resume.html)
