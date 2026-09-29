@@ -382,11 +382,9 @@ function App() {
         <div className="sidebar-bottom">
           <div className="trust-note">
             <ShieldCheck size={18} />
-            <strong>Evidence comes first.</strong>
+            <strong>About these answers</strong>
             <p>
-              Sources you can inspect.
-              <br />
-              Answers you can verify.
+              Answers use the payment guides. <br /> Check the quoted passages.
             </p>
           </div>
           <div className="profile">
@@ -485,14 +483,14 @@ function App() {
             <div className="assistant-grid">
               <section className="conversation">
                 <div className="section-kicker">
-                  <span className="purple-dot" /> YOUR KNOWLEDGE, CONNECTED
+                  <span className="purple-dot" /> PAYMENT SUPPORT
                 </div>
                 <div className="assistant-heading">
                   <div>
                     <h1>
                       {answer
                         ? "A little more clarity."
-                        : "Clarity, with a source."}
+                        : "Ask about the payment guides"}
                     </h1>
                     <p>
                       Understand your team’s procedures, with sources you can
@@ -536,22 +534,18 @@ function App() {
                         <Sparkles size={30} />
                         <span className="orb-dot" />
                       </div>
-                      <span className="mini-label">
-                        MEET YOUR SUPPORT COMPANION
-                      </span>
+                      <span className="mini-label">PAYMENT SUPPORT GUIDES</span>
                       <h2>
-                        Less searching.
-                        <br />
-                        More understanding.
+                        What would you <br /> like to know?
                       </h2>
                       <p>
-                        Ask about payments, approvals, and recovery. Every
-                        answer starts with your published guides.
+                        Ask a question about the payment guides. You can open
+                        the source passage beside each answer.
                       </p>
                       <div className="welcome-tags">
                         <span>
                           <FileText size={13} />
-                          {data.documentCount} trusted guides
+                          {data.documentCount} payment guides
                         </span>
                         <span>
                           <ShieldCheck size={13} />
@@ -910,9 +904,7 @@ function App() {
                 <div className="rail-heading">
                   <div>
                     <BookOpen size={17} />
-                    <h2>
-                      {answer ? "Answer evidence" : "Your source of truth"}
-                    </h2>
+                    <h2>{answer ? "Answer evidence" : "Payment guides"}</h2>
                   </div>
                   <span>
                     {answer ? answer.evidence.length : data.documentCount}
@@ -921,7 +913,7 @@ function App() {
                 <p className="rail-intro">
                   {answer
                     ? "Open a passage to see the context behind this response."
-                    : "A small, carefully maintained library for everyday payment questions."}
+                    : "Browse the guides used to answer payment questions."}
                 </p>
                 {answer ? (
                   <div className="evidence-list">
@@ -977,10 +969,10 @@ function App() {
                   <div className="quality-symbol">
                     <CheckCheck size={21} />
                   </div>
-                  <h3>Good answers are accountable.</h3>
+                  <h3>Check the answer</h3>
                   <p>
-                    Inspect the source. Flag a gap. Bring a person into the loop
-                    when the evidence stops.
+                    Read the quoted passage before relying on an answer. If
+                    something is missing, send the question for review.
                   </p>
                   <button
                     className="text-button"
@@ -1003,7 +995,7 @@ function App() {
               <PageHeading
                 kicker="THE PUBLISHED LIBRARY"
                 title="Knowledge, kept close."
-                subtitle="Inspect the guides that power every answer. No hidden sources."
+                subtitle="Browse the documents the assistant searches."
                 aside={
                   <span className="soft-label">
                     <BookOpen size={15} />
@@ -1083,7 +1075,7 @@ function App() {
               <PageHeading
                 kicker="A PERSON IN THE LOOP"
                 title="Careful handoffs."
-                subtitle="The question, context, and evidence. Ready for a human decision."
+                subtitle="Review questions the assistant could not answer."
                 aside={
                   <span className="soft-label">
                     <Inbox size={15} />
@@ -1169,7 +1161,7 @@ function App() {
               <PageHeading
                 kicker="QUALITY YOU CAN INSPECT"
                 title="Measured, not assumed."
-                subtitle="A repeatable test suite for retrieval, citations, and knowing when to stop."
+                subtitle="Check how the assistant handles the saved test questions."
                 aside={
                   <button
                     className="button primary"
@@ -1286,7 +1278,7 @@ function App() {
                   </div>
                   <section className="panel evaluation-table">
                     <div className="panel-title">
-                      <h2>Every case, in the open</h2>
+                      <h2>Results for each question</h2>
                       <label>
                         <span className="sr-only">Filter evaluation cases</span>
                         <select
@@ -1416,7 +1408,7 @@ function App() {
             </>
           )}
           <footer className="app-footer">
-            <span>Built with care by Cynthia Owolabi</span>
+            <span>Built by Cynthia Owolabi</span>
             <span>Synthetic data · No real funds or account access</span>
           </footer>
         </main>

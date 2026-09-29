@@ -1,8 +1,8 @@
 # SourceDesk
 
-**Payment support with evidence, careful handoffs, and measurable quality.**
+Ask a question about payments and read the guide behind the answer.
 
-SourceDesk is a support workspace by Cynthia Owolabi. Ask a question, inspect the passages behind an answer, flag a gap, and carry unresolved questions into a review queue. It is the applied-AI companion to [LedgerDesk](https://github.com/adebolaowolabi32/payment-operations-console), using original synthetic payment documentation.
+I built SourceDesk around 12 fictional payment guides. It retrieves relevant passages and can use GPT to write an answer with quotes you can check. If a question needs account data or the guides don’t cover it, the app sends it to review. The payment scenarios relate to [LedgerDesk](https://github.com/adebolaowolabi32/payment-operations-console).
 
 ![SourceDesk portfolio preview](docs/portfolio-desktop.png)
 
@@ -12,7 +12,7 @@ SourceDesk is a support workspace by Cynthia Owolabi. Ask a question, inspect th
 
 The GitHub Pages preview runs entirely in your browser: try suggested questions, inspect recorded answers and citations, give feedback, and simulate a review case. Examples use synthetic data. The evaluation screen displays a saved regression report. Preview history is stored only in this browser and can be cleared with **Reset demo**. It does not call OpenAI or connect to a backend/database.
 
-The repository also contains the runnable backend and real GPT/pgvector implementation, with tests and measured live smoke results. These are engineering evidence for this portfolio project; no production service is operated.
+To try live generation, run the backend locally with GPT and pgvector. The repository includes setup instructions and saved results from a small live test. The public site uses recorded answers.
 
 ## Install and run
 
@@ -82,7 +82,7 @@ npm run dev
 
 Index generations include the corpus content hash and embedding configuration. Re-indexing an unchanged corpus makes no embedding calls. Failed indexing publishes no partial generation. Rebuild after changing guides or embedding model, then restart the app. Startup and `/api/ready` check index completeness.
 
-Controlled provider tests and real PostgreSQL tests pass. After funding the API account, live indexing stored **30 passages** and the five-case live smoke check passed **5/5**. A review of the first run found wording that implied knowledge of a specific payment; the prompt was tightened and all five cases passed again. Both [initial](docs/live-evaluation-initial.json) and [final](docs/live-evaluation-report.json) results are retained. Combined indexing and both runs used approximately **$0.00839** at verified standard token rates (caching discounts ignored), below the user's $1 test limit. This is usage-based estimation, not an invoice or a general accuracy claim.
+Controlled provider tests and real PostgreSQL tests pass. Live indexing stored **30 passages** and the five-case live smoke check passed **5/5**. A review of the first run found wording that implied knowledge of a specific payment; the prompt was tightened and all five cases passed again. Both [initial](docs/live-evaluation-initial.json) and [final](docs/live-evaluation-report.json) results are retained. Combined indexing and both runs used approximately **$0.00839** at verified standard token rates (caching discounts ignored), below the $1 budget set for these tests. This is usage-based estimation, not an invoice or a general accuracy claim.
 
 `npm run evaluate:live` indexes if needed and uses a persistent, conservative $0.50 request budget in `data/live-test-budget.json`, covering retries within this serial test runner. It permits only the two priced models, limits output, and reserves a doubled byte-based input bound before sending each request. Failed requests keep their reservation. Run only one live test runner at a time; do not delete its ledger to bypass a budget. This test budget does not limit interactive app usage or the standalone indexing command.
 
@@ -122,7 +122,7 @@ Backend tests cover exact citations, abstention, quarantined instruction-bearing
 - [Evaluation methodology](docs/EVALUATION.md)
 - [Installation](docs/INSTALLATION.md)
 
-For a hosted team product, the next steps are real identity and organization membership, reviewer assignment, a larger independently held-out corpus, operational monitoring, and independently measured model quality. This repository intentionally contains only synthetic support data.
+Before using this with a support team, I would add sign-in and reviewer assignment. Answer quality also needs testing on questions written by someone who has not seen the implementation. All support data in this repository is fictional.
 
 ## Publish the static preview
 
@@ -138,6 +138,6 @@ The preview uses checked-in synthetic fixtures in `src/demo-fixtures.json`. To r
 
 ## Author
 
-[Cynthia Owolabi](https://github.com/adebolaowolabi32), Senior Full Stack Engineer with experience across backend, frontend, platforms and applied AI.
+Built by [Cynthia Owolabi](https://github.com/adebolaowolabi32).
 
 [Portfolio and experience](https://adebolaowolabi32.github.io/) · [Current CVs](https://adebolaowolabi32.github.io/resume.html)

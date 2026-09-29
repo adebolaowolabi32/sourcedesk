@@ -6,7 +6,7 @@ test("question, citations, feedback, and persistent history work", async ({
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Clarity, with a source." }),
+    page.getByRole("heading", { name: "Ask about the payment guides" }),
   ).toBeVisible();
   await page
     .getByRole("button", { name: /A payment is still confirming/ })
@@ -102,7 +102,7 @@ test("desktop and mobile layouts stay usable and save visual evidence", async ({
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Clarity, with a source." }),
+    page.getByRole("heading", { name: "Ask about the payment guides" }),
   ).toBeVisible();
   await page.screenshot({ path: "docs/desktop.png", fullPage: true });
   await page
