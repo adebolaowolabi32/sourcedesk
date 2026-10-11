@@ -2,7 +2,7 @@
 
 All endpoints return JSON. Errors use `{error}` with an `X-Request-Id` response header. Mutations require `X-Requested-With: SourceDesk` and reject browser requests marked `Sec-Fetch-Site: cross-site`.
 
-A browser receives a private, seven-day HttpOnly session cookie on its first API call. The server stores a hash and scopes all questions/cases to that session. This is demo isolation, not a login/account system.
+A browser receives a private, seven-day HttpOnly session cookie on its first API call. The server stores a hash and scopes all questions/cases to that session. This isolates each browser's demo records. User accounts would require an authentication system.
 
 | Method | Path                        | Purpose                                                                                                        |
 | ------ | --------------------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -22,10 +22,10 @@ A browser receives a private, seven-day HttpOnly session cookie on its first API
 
 Questions are 3–1,200 trimmed characters, handoff notes at most 1,000, and resolutions 10–2,000. Requests have a 12 KB JSON limit. Ask requests are limited per session and source IP; new session issuance and evaluation runs are also bounded. At most four answers run concurrently in one server process.
 
-An answer has `status: answered|handoff`, `engine: extractive|openai|fallback`, `passages: [{text,citationId}]`, `evidence`, `corpusVersion`, `retrievalMs`, `latencyMs`, usage, feedback, and an optional case ID. Handed-off answers have no answer passages. Evidence consists of candidate passages, which may be relevant context without fully answering the question.
+An answer has `status: answered|handoff`, `engine: extractive|openai|fallback`, `passages: [{text,citationId}]`, `evidence`, `corpusVersion`, `retrievalMs`, `latencyMs`, usage, feedback, and an optional case ID. Handed-off answers return an empty passages array. Evidence consists of candidate passages, which may be relevant context without fully answering the question.
 
-Provider failures, refusals, incomplete output, and invalid citation IDs produce a handoff. The browser does not receive provider keys or raw provider error bodies. Raw retrieval scores are relevance scores, not probabilities. Usage costs are zero for extraction, null in GPT/vector mode (not a zero-cost claim).
+Provider failures, refusals, incomplete output, and invalid citation IDs produce a handoff. Provider keys and raw provider errors stay on the server. Retrieval scores rank relevance. Usage costs are zero for extraction; `null` in GPT/vector mode means the cost is uncalculated.
 
-Repeated handoff creation returns the existing case. Already-resolved cases or stale versions return 409. Foreign-session or unknown answer/case IDs return 404. All state is synthetic; no route acts on a LedgerDesk payment or sends an external message.
+Repeated handoff creation returns the existing case. Already-resolved cases or stale versions return 409. Foreign-session or unknown answer/case IDs return 404. All routes operate on synthetic local records.
 
-In RAG mode, answers additionally include `claims: [{text,citations:[{id,quote}]}]`, `retrievalMode: "vector"`, and `embeddingTokens`. Generation token counts are in `usage`; retrieved cosine similarities are in `evidence[].score`. `passages` retains original cited source text for history, citations, and compatibility. No claim or answer passage is rendered for handoffs. Quote matching verifies source provenance, not claim entailment. Historical extractive answers remain readable.
+In RAG mode, answers additionally include `claims: [{text,citations:[{id,quote}]}]`, `retrievalMode: "vector"`, and `embeddingTokens`. Generation token counts are in `usage`; retrieved cosine similarities are in `evidence[].score`. `passages` retains original cited source text for history, citations, and compatibility. Handoffs render the review state. Quote matching checks that text occurs in its source; semantic support requires review. Historical extractive answers remain readable.
