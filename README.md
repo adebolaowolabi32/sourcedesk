@@ -63,7 +63,7 @@ The initial authored regression run passed **38/40 cases**. It exposed a missing
 | Citation identity and exact-text validity                        | 100% of rendered citations |
 | API cost, default extractive run                                 | $0                         |
 
-See the [full report](docs/evaluation-report.json), [original baseline](docs/baseline-evaluation.json), and [evaluation methodology](docs/EVALUATION.md). Latency is measured on each run and is not a production benchmark. These 40 visible synthetic cases are a regression suite, **not a claim of general accuracy**. The fixed “holdout” subset was inspected during development and is not an independent blind evaluation. A separate five-case live smoke check is recorded below; it is not an independent quality benchmark.
+These are development regression results from 40 questions used while building the app, including the subset originally called “holdout.” They do not measure performance on unseen questions. The [evaluation guide](docs/EVALUATION.md) explains the graders and remaining gaps, with links to the [original baseline](docs/baseline-evaluation.json) and [current report](docs/evaluation-report.json).
 
 ![Source-backed answer](docs/answer.png)
 
@@ -82,11 +82,9 @@ npm run dev
 
 Index generations include the corpus content hash and embedding configuration. Re-indexing an unchanged corpus makes no embedding calls. Failed indexing publishes no partial generation. Rebuild after changing guides or embedding model, then restart the app. Startup and `/api/ready` check index completeness.
 
-Controlled provider tests and real PostgreSQL tests pass. Live indexing stored **30 passages** and the five-case live smoke check passed **5/5**. A review of the first run found wording that implied knowledge of a specific payment; the prompt was tightened and all five cases passed again. Both [initial](docs/live-evaluation-initial.json) and [final](docs/live-evaluation-report.json) results are retained. Combined indexing and both runs used approximately **$0.00839** at verified standard token rates (caching discounts ignored), below the $1 budget set for these tests. This is usage-based estimation, not an invoice or a general accuracy claim.
+Live indexing stored **30 passages**, and five integration checks passed. Reviewing the first run caught wording that implied knowledge of a specific payment. I changed the prompt to describe the documentation conditionally and reran the checks. Both [initial](docs/live-evaluation-initial.json) and [final](docs/live-evaluation-report.json) reports are retained.
 
-`npm run evaluate:live` indexes if needed and uses a persistent, conservative $0.50 request budget in `data/live-test-budget.json`, covering retries within this serial test runner. It permits only the two priced models, limits output, and reserves a doubled byte-based input bound before sending each request. Failed requests keep their reservation. Run only one live test runner at a time; do not delete its ledger to bypass a budget. This test budget does not limit interactive app usage or the standalone indexing command.
-
-The dashboard and `npm run evaluate` always evaluate the offline baseline without API calls. Provider token usage is recorded; interactive RAG dollar cost remains `null`. The live report separately records usage-based estimated cost and conservative budget reservations.
+The dashboard and `npm run evaluate` test the offline pipeline. `npm run evaluate:live` makes paid API calls and has a persistent $0.50 test budget; that limit does not cover normal app usage or standalone indexing. Read the [live-test instructions](docs/EVALUATION.md#running-live-tests) before running it.
 
 ## Validate
 
